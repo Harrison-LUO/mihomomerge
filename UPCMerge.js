@@ -30,6 +30,7 @@ function main(config, profileName) {
     // 修改节点 UDP over TCP 选项
     updateProxyOption(config, "type", ["vmess", "vless", "trojan", "ss", "ssr", "tuic"], "udp-over-tcp", true);
     updateProxyOption(config, "type", ["hysteria2"], "skip-cert-verify", true);
+    updateProxyOption(config, "type", ["vmess"], "tfo", true);
 
     // 添加节点到正则组
     addProxiesToRegexGroup(config, /Stream/, "DIRECT");
