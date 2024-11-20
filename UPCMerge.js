@@ -29,11 +29,11 @@ function main(config, profileName) {
 
     // 修改节点 UDP over TCP 选项
     updateProxyOption(config, "type", ["vmess", "vless", "trojan", "ss", "ssr", "tuic"], "udp-over-tcp", true);
+    updateProxyOption(config, "type", ["hysteria2"], "skip-cert-verify", true);
 
     // 添加节点到正则组
     addProxiesToRegexGroup(config, /Stream/, "DIRECT");
     addProxiesToRegexGroup(config, /回家专用延迟优先/, "DIRECT");
-    addProxiesToRegexGroup(config, /CQGAS/, "DIRECT");
 
     // 添加规则
     addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
