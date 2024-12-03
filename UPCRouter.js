@@ -17,13 +17,13 @@ function main(config, profileName) {
     // 修改落地节点 IP 版本
     updateProxyOptionByGroup(config, "name", ["🛬 新加坡落地", "🛬 美国落地", "🛬 日本落地", "🛬 香港落地"], "ip-version", "ipv4-prefer");
 
-    // 设置dialer-proxy
-    // updateDialerProxyGroup(config, [
-    //     ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🇸🇬 新加坡自建落地"],
-    //     ["🛬 美国落地", "🇺🇲 美国节点", "🇺🇲 美国自建落地"],
-    //     ["🛬 日本落地", "🇯🇵 日本节点", "🇯🇵 日本自建落地"],
-    //     ["🛬 香港落地", "🇭🇰 香港节点", "🇭🇰 香港自建落地"]
-    // ]);
+    设置dialer-proxy
+    updateDialerProxyGroup(config, [
+        ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🇸🇬 新加坡自建落地"],
+        ["🛬 美国落地", "🇺🇲 美国节点", "🇺🇲 美国自建落地"],
+        ["🛬 日本落地", "🇯🇵 日本节点", "🇯🇵 日本自建落地"],
+        ["🛬 香港落地", "🇭🇰 香港节点", "🇭🇰 香港自建落地"]
+    ]);
 
     // 修改节点dialer-proxy (正则匹配)
     updateProxyOption(config, "name", /JP穿透SS-/, "dialer-proxy", "🇯🇵 日本节点");
@@ -46,8 +46,8 @@ function main(config, profileName) {
     // 添加规则
     addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
 
-    // 分组排序
-    sortRulesWithinGroups(config);
+    // // 分组排序
+    // sortRulesWithinGroups(config);
     // 修改节点 UDP over TCP 选项
     updateProxyOption(config, "type", ["hysteria2"], "skip-cert-verify", true);
     updateProxyOption(config, "type", ["vmess"], "tfo", true);
