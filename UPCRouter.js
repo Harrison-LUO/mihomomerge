@@ -47,7 +47,12 @@ function main(config, profileName) {
     addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
 
     // 分组排序
-    sortRulesWithinGroups(config)
+    sortRulesWithinGroups(config);
+    // 修改节点 UDP over TCP 选项
+    updateProxyOption(config, "type", ["hysteria2"], "skip-cert-verify", true);
+    updateProxyOption(config, "type", ["vmess"], "tfo", true);
+    // 添加规则
+    addRules(config, "DOMAIN-SUFFIX,itunes.apple.com,DIRECT", "unshift");
 
     return config;
 }
