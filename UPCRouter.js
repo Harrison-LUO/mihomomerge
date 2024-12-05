@@ -15,14 +15,15 @@ function main(config, profileName) {
     ], true);
     
     // 修改落地节点 IP 版本
-    updateProxyOptionByGroup(config, "name", ["🛬 新加坡落地", "🛬 美国落地", "🛬 日本落地", "🛬 香港落地"], "ip-version", "ipv4-prefer");
-
+    updateProxyOptionByGroup(config, "name", ["🛬 新加坡落地", "🛬 美国落地", "🛬 日本落地", "🛬 香港落地","🛬 任选落地"], "ip-version", "ipv4-prefer");
+    updateProxyOptionByGroup(config,"name","🏘 回家专用延迟优先","url","http://192.168.99.11:8006")
     // 设置dialer-proxy
     updateDialerProxyGroup(config, [
         ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🦁 新加坡自建落地"],
         ["🛬 美国落地", "🇺🇲 美国节点", "💵 美国自建落地"],
         ["🛬 日本落地", "🇯🇵 日本节点", "🎎 日本自建落地"],
-        ["🛬 香港落地", "🇭🇰 香港节点", "🌷 香港自建落地"]
+        ["🛬 香港落地", "🇭🇰 香港节点", "🌷 香港自建落地"],
+        ["🛬 任选落地", "🛫 任选前置", "🚡 任选落地"],
     ]);
 
     // 修改节点dialer-proxy (正则匹配)
