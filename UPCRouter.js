@@ -47,8 +47,8 @@ function main(config, profileName) {
 
     // 添加规则
     addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
-    addRules(config, "DOMAIN,openapi.luoveyq.space,🍀 香港应用", "unshift");
-    addRules(config, "IP-CIDR,(156.226.172.0/23,no-resolve),🍀 香港应用", "unshift");
+    addRules(config, "DOMAIN,openapi.luoveyq.space,🇭🇰 香港节点", "unshift");
+    addRules(config, "IP-CIDR,(156.226.172.0/23,no-resolve),🇭🇰 香港节点", "unshift");
 
     // 分组排序
     sortRulesWithinGroups(config)
