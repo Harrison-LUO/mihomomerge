@@ -47,6 +47,9 @@ function main(config, profileName) {
     addProxiesToRegexGroup(config, /回家专用延迟优先/, "DIRECT");
     addProxiesToRegexGroup(config, /CQGAS/, "DIRECT");
     addProxiesToRegexGroup(config, /流媒体手选/, "DIRECT");
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🇪🇺 西北欧节点",true);
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🇭🇰 香港节点");
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🛬 香港落地");
 
     // 添加规则
     // addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
