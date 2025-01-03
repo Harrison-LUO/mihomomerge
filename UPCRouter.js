@@ -43,10 +43,16 @@ function main(config, profileName) {
     // 修改节点 UDP over TCP 选项
     updateProxyOption(config, "type", ["vmess", "vless", "trojan", "ss", "ssr", "tuic"], "udp-over-tcp", true);
 
+
     // 添加节点到正则组
     addProxiesToRegexGroup(config, /回家专用延迟优先/, "DIRECT");
     addProxiesToRegexGroup(config, /CQGAS/, "DIRECT");
     addProxiesToRegexGroup(config, /流媒体手选/, "DIRECT");
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🇪🇺 西北欧节点",true);
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🛬 西北欧落地",true);
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🇭🇰 香港节点");
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🛬 香港落地");
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🛬 西北欧落地");
 
     // 添加新节点
     const DIRECTv4Pre = { "name": "DIRECT-V4PRE", "type": "direct", "udp": true, "ip-version": "ipv4-prefer" };
