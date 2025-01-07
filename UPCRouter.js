@@ -18,7 +18,7 @@ function main(config, profileName) {
     updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
 
     // 关闭自建落地TCP快速打开
-    updateProxyOption(config, "name", /(SG|US|JP|HK|EU|TW)-L/, "tfo", false)
+    updateProxyOption(config, "name", /自建L/, "tfo", false)
 
     // // 设置dialer-proxy
     // updateDialerProxyGroup(config, [
