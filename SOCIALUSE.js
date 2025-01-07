@@ -8,24 +8,24 @@ function main(config, profileName) {
     ], true);
 
     // 删除正则匹配属性节点
-    removeProxiesByRegexProperty(config,"name",/校园|回家/);
+    removeProxiesByRegexProperty(config,"name",/穿透SS-/);
 
     // 修改落地节点 IP 版本
-    updateProxyOptionByGroup(config, "name", ["🛬 新加坡落地", "🛬 美国落地", "🛬 日本落地", "🛬 香港落地"], "ip-version", "ipv4-prefer");
+    updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
 
-    // 设置dialer-proxy
+    // 关闭自建落地TCP快速打开
+    updateProxyOption(config, "name", /(SG|US|JP|HK|EU|TW)-L/, "tfo", false)
+
+    // // 设置dialer-proxy
     // updateDialerProxyGroup(config, [
-    //     ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🇸🇬 新加坡自建落地"],
-    //     ["🛬 美国落地", "🇺🇲 美国节点", "🇺🇲 美国自建落地"],
-    //     ["🛬 日本落地", "🇯🇵 日本节点", "🇯🇵 日本自建落地"],
-    //     ["🛬 香港落地", "🇭🇰 香港节点", "🇭🇰 香港自建落地"]
+    //     ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🦁 新加坡自建落地"],
+    //     ["🛬 美国落地", "🇺🇲 美国节点", "💵 美国自建落地"],
+    //     ["🛬 日本落地", "🇯🇵 日本节点", "🎎 日本自建落地"],
+    //     ["🛬 香港落地", "🇭🇰 香港节点", "🌷 香港自建落地"],
+    //     ["🛬 湾湾落地", "🐉 湾湾节点", "🍍 湾湾自建落地"],
+    //     ["🛬 西北欧落地", "🇪🇺 西北欧节点", "🗼 西北欧自建落地"]
     // ]);
-
-    // 修改节点dialer-proxy (正则匹配)
-    updateProxyOption(config, "name", /JP穿透SS-/, "dialer-proxy", "🇯🇵 日本节点");
-    updateProxyOption(config, "name", /HK穿透SS-/, "dialer-proxy", "🇭🇰 香港节点");
-    updateProxyOption(config, "name", /US穿透SS-/, "dialer-proxy", "🇺🇲 美国节点");
-    updateProxyOption(config, "name", /SG穿透SS-/, "dialer-proxy", "🇸🇬 新加坡节点");
+    // updateGroupOption(config, "type", ["load-balance"], "strategy", "round-robin");
 
     // 修改订阅组选项
     updateGroupOption(config, "type", ["load-balance", "fallback", "url-test"], "lazy", false);
@@ -34,8 +34,25 @@ function main(config, profileName) {
     // 修改节点 UDP over TCP 选项
     updateProxyOption(config, "type", ["vmess", "vless", "trojan", "ss", "ssr", "tuic"], "udp-over-tcp", true);
 
+    // 添加节点到正则组
+    addProxiesToRegexGroup(config, /回家专用延迟优先/, "DIRECT");
+    addProxiesToRegexGroup(config, /CQGAS/, "DIRECT");
+    addProxiesToRegexGroup(config, /流媒体手选/, "DIRECT");
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🇪🇺 西北欧节点",true);
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🛬 西北欧落地",true);
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🇭🇰 香港节点");
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🛬 香港落地");
+    addProxiesToRegexGroup(config, /西北欧自建落地/, "🛬 西北欧落地");
+
+    // 添加新节点
+    const DIRECTv4Pre = { "name": "DIRECT-V4PRE", "type": "direct", "udp": true, "ip-version": "ipv4-prefer" };
+    addProxyAndGroup(config, DIRECTv4Pre, "before", "DIRECT");
+
     // 添加规则
-    addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
+    // addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
+    addRules(config, "IP-CIDR,107.175.57.187/32,🤠 美国直达,no-resolve", "unshift");
+    addRules(config,"DOMAIN-SUFFIX,hk.luoveyq.space,👾 香港直达","unshift")
+    addRules(config,"DOMAIN-SUFFIX,us.luoveyq.space,🤠 美国直达","unshift")
 
     // 分组排序
     sortRulesWithinGroups(config)
@@ -98,6 +115,7 @@ function updateDialerProxyGroup(config, groupMappings) {
     });
 }
 
+
 // 修改节点组属性
 // 传入参数：config, searchBy, targetGroups, optionName, optionValue
 function updateGroupOption(config, searchBy, targetGroups, optionName, optionValue) {
@@ -119,6 +137,7 @@ function updateGroupOption(config, searchBy, targetGroups, optionName, optionVal
         }
     });
 }
+
 
 // 修改节点属性
 // 传入参数：config, searchBy, targetProxies, optionName, optionValue
@@ -187,20 +206,28 @@ function updateProxyOptionByGroup(config, searchBy, targetGroups, optionName, op
 
 
 // 指定节点到正则匹配节点组
-// 传入参数：config, regex, newProxies
-function addProxiesToRegexGroup(config, regex, newProxies) {
+// 传入参数：config, regex, newProxies, del(boolean, 是否删除)
+function addProxiesToRegexGroup(config, regex, newProxies, del = false) {
     const targetGroups = config["proxy-groups"].filter(group => regex.test(group.name));
     targetGroups.forEach(targetGroup => {
         if (!Array.isArray(newProxies)) {
             newProxies = [newProxies];
         }
         newProxies.forEach(proxy => {
-            if (!targetGroup.proxies.includes(proxy)) {
-                targetGroup.proxies.push(proxy);
+            if (del) {
+                const index = targetGroup.proxies.indexOf(proxy);
+                if (index > -1) {
+                    targetGroup.proxies.splice(index, 1);
+                }
+            } else {
+                if (!targetGroup.proxies.includes(proxy)) {
+                    targetGroup.proxies.push(proxy);
+                }
             }
         });
     });
 }
+
 
 // 删除正则匹配属性节点
 // 传入参数：config, property(属性), regex(正则表达式)
@@ -218,6 +245,7 @@ function removeProxiesByRegexProperty(config, property, regex) {
     });
 }
 
+
 // 添加规则
 // 传入参数：config, newrule, position(push/unshift，默认为unshift，即最高优先级)
 function addRules(config, newrule, position) {
@@ -226,6 +254,22 @@ function addRules(config, newrule, position) {
     } else {
         config["rules"].unshift(newrule);
     }
+}
+
+// 删除指定属性节点
+// 传入参数：config, property(属性), value(值)
+function removeProxiesByProperty(config, property, value) {
+    const removedProxyNames = [];
+    config.proxies = config.proxies.filter(proxy => {
+        if (proxy[property] === value) {
+            removedProxyNames.push(proxy.name);
+            return false;
+        }
+        return true;
+    });
+    config["proxy-groups"].forEach(group => {
+        group.proxies = group.proxies.filter(proxyName => !removedProxyNames.includes(proxyName));
+    });
 }
 
 // 对规则进行排序
@@ -292,3 +336,133 @@ function sortRulesWithinGroups(config) {
     config.rules = sortedRules;
     return config;
 }
+
+// 向 proxies 添加节点并配置属性，然后添加到指定的节点组
+// 传入参数：config, newProxy, insertMode, reference
+function addProxyAndGroup(config, newProxy, insertMode, reference) {
+    // 1. 添加节点到 config.proxies
+    if (!config.proxies) {
+        config.proxies = [];
+    }
+    config.proxies.push(newProxy);
+
+    // 2. 将节点添加到指定的节点组
+    if (insertMode === "before" || insertMode === "after") {
+        // 方式 1: 放置到包含某个节点的组的上面或者下面
+        let targetGroup = null;
+        let targetIndex = -1;
+
+        // 查找包含 reference 的节点组
+        for (let i = 0; i < config["proxy-groups"].length; i++) {
+            const group = config["proxy-groups"][i];
+            const index = group.proxies.indexOf(reference);
+            if (index > -1) {
+                targetGroup = group;
+                targetIndex = i;
+                break;
+            }
+        }
+
+        // 将节点添加到目标组
+        if (targetGroup) {
+            const referenceIndex = targetGroup.proxies.indexOf(reference);
+            if (insertMode === "before") {
+                targetGroup.proxies.splice(referenceIndex, 0, newProxy.name);
+            } else {
+                targetGroup.proxies.splice(referenceIndex + 1, 0, newProxy.name);
+            }
+        } else {
+            console.error(`Reference proxy "${reference}" not found in any group.`);
+        }
+    } else if (insertMode === "regex") {
+        // 方式 2: 放置到正则表达式允许的组
+        if (!(reference instanceof RegExp)) {
+            console.error("Reference must be a regular expression for 'regex' mode.");
+            return;
+        }
+
+        const targetGroups = config["proxy-groups"].filter(group => reference.test(group.name));
+        targetGroups.forEach(targetGroup => {
+            if (!targetGroup.proxies.includes(newProxy.name)) {
+                targetGroup.proxies.push(newProxy.name);
+            }
+        });
+    } else {
+        console.error("Invalid insertMode. Use 'before', 'after', or 'regex'.");
+    }
+}
+// 向 proxies 添加节点并配置属性，然后添加到指定的节点组
+// 传入参数：config, newProxy, insertMode(before插入特定节点之前/after插入特定节点之后/regex插入正则组), reference
+function addProxyAndGroup(config, newProxy, insertMode, reference) {
+    // 1. 添加节点到 config.proxies
+    if (!config.proxies) {
+        config.proxies = [];
+    }
+    config.proxies.push(newProxy);
+
+    // 2. 将节点添加到指定的节点组
+    if (insertMode === "before" || insertMode === "after") {
+        let targetGroups = [];
+        for (let i = 0; i < config["proxy-groups"].length; i++) {
+            const group = config["proxy-groups"][i];
+            if (group.proxies.includes(reference)) {
+                targetGroups.push(group);
+            }
+        }
+
+        targetGroups.forEach(targetGroup => {
+            const referenceIndex = targetGroup.proxies.indexOf(reference);
+            if (insertMode === "before") {
+                targetGroup.proxies.splice(referenceIndex, 0, newProxy.name);
+            } else {
+                targetGroup.proxies.splice(referenceIndex + 1, 0, newProxy.name);
+            }
+        });
+
+        if (targetGroups.length === 0) {
+            console.error(`Reference proxy "${reference}" not found in any group.`);
+        }
+    } else if (insertMode === "regex") {
+        if (!(reference instanceof RegExp)) {
+            console.error("Reference must be a regular expression for 'regex' mode.");
+            return;
+        }
+
+        const targetGroups = config["proxy-groups"].filter(group => reference.test(group.name));
+        targetGroups.forEach(targetGroup => {
+            if (!targetGroup.proxies.includes(newProxy.name)) {
+                targetGroup.proxies.push(newProxy.name);
+            }
+        });
+    } else {
+        console.error("Invalid insertMode. Use 'before', 'after', or 'regex'.");
+    }
+}
+// addProxyAndGroup使用方法
+// // 假设的配置对象
+// let config = {
+//     "proxies": [
+//         { "name": "节点A", "type": "ss", "server": "serverA", "port": 443, "cipher": "aes-256-gcm", "password": "passwordA" },
+//         { "name": "节点B", "type": "vmess", "server": "serverB", "port": 443, "uuid": "uuidB", "alterId": 64, "cipher": "auto" }
+//     ],
+//     "proxy-groups": [
+//         { "name": "Group1", "type": "select", "proxies": ["节点A", "节点B"] },
+//         { "name": "Group2", "type": "url-test", "proxies": ["节点B"] },
+//         { "name": "香港", "type": "url-test", "proxies": ["节点A"] }
+//     ],
+//     "rules": []
+// };
+
+// // 示例1：添加一个新节点，并将其放置在包含 "节点A" 的组的前面
+// const newProxy1 = { "name": "新节点1", "type": "trojan", "server": "server1", "port": 443, "password": "password1" };
+// addProxyAndGroup(config, newProxy1, "before", "节点A");
+
+// // 示例2：添加一个新节点，并将其放置在包含 "节点B" 的组的后面
+// const newProxy2 = { "name": "新节点2", "type": "ss", "server": "server2", "port": 443, "cipher": "chacha20-ietf-poly1305", "password": "password2" };
+// addProxyAndGroup(config, newProxy2, "after", "节点B");
+
+// // 示例3：添加一个新节点，并将其放置在名称匹配 /香港/ 的组中
+// const newProxy3 = { "name": "新节点3", "type": "vmess", "server": "server3", "port": 443, "uuid": "uuid3", "alterId": 32, "cipher": "auto" };
+// addProxyAndGroup(config, newProxy3, "regex", /香港/);
+
+// console.log(JSON.stringify(config, null, 2));

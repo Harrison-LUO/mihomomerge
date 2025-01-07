@@ -18,7 +18,7 @@ function main(config, profileName) {
     updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
 
     // 关闭自建落地TCP快速打开
-    updateProxyOption(config, "name", /自建L/, "tfo", false)
+    updateProxyOption(config, "name", /(SG|US|JP|HK|EU|TW)-L/, "tfo", false)
 
     // // 设置dialer-proxy
     // updateDialerProxyGroup(config, [
@@ -60,6 +60,9 @@ function main(config, profileName) {
 
     // 添加规则
     // addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
+    addRules(config, "IP-CIDR,107.175.57.187/32,🤠 美国直达,no-resolve", "unshift");
+    addRules(config,"DOMAIN-SUFFIX,hk.luoveyq.space,👾 香港直达","unshift")
+    addRules(config,"DOMAIN-SUFFIX,us.luoveyq.space,🤠 美国直达","unshift")
 
     // 分组排序
     sortRulesWithinGroups(config)
