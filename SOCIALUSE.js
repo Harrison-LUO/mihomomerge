@@ -14,6 +14,8 @@ function main(config, profileName) {
 
     removeGroupsByRegex(config,/回家/);
     removeGroupsByRegex(config,/学术/);
+    removeProxiesByRegex(config,/回家/);
+    removeProxiesByRegex（config,/校园/）
 
     // 设置dialer-proxy
     // updateDialerProxyGroup(config, [
