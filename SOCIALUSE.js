@@ -12,11 +12,6 @@ function main(config, profileName) {
     // 关闭自建落地TCP快速打开
     updateProxyOption(config, "name", /自建L/, "tfo", false);
 
-    removeGroupsByRegex(config,/回家/);
-    removeGroupsByRegex(config,/学术/);
-    removeProxiesByRegex(config,/回家/);
-    removeProxiesByRegex(config,/校园/);
-
     // 设置dialer-proxy
     // updateDialerProxyGroup(config, [
     //     ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🦁 新加坡自建落地"],
@@ -64,6 +59,11 @@ function main(config, profileName) {
 
     // 添加规则
     // addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
+
+    removeGroupsByRegex(config,/回家/);
+    removeGroupsByRegex(config,/学术/);
+    removeProxiesByRegex(config,/回家/);
+    removeProxiesByRegex(config,/校园/);
 
     // 分组排序
     sortRulesWithinGroups(config)
