@@ -51,7 +51,7 @@ function main(config, profileName) {
     updateProxyOption(config, "name", /TW穿透SS-/, "dialer-proxy", "🐉 湾湾节点");
 
     // 修改订阅组选项
-    updateGroupOption(config, "type", ["load-balance", "fallback", "url-test"], "lazy", true);
+    updateGroupOption(config, "type", ["load-balance", "fallback", "url-test"], "lazy", false);
 
     // 修改节点 UDP over TCP 选项
     updateProxyOption(config, "type", ["vmess", "vless", "trojan", "ss", "ssr", "tuic"], "udp-over-tcp", true);
@@ -69,7 +69,7 @@ function main(config, profileName) {
     // addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
 
     // 分组排序
-    sortRulesWithinGroups(config)
+    // sortRulesWithinGroups(config)
 
     // 移除LS标记
     proxiesRename(config, "select", /\[LS\]/, "")
