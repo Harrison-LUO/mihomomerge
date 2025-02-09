@@ -25,8 +25,19 @@ function main(config, profileName) {
     // 修改落地节点 IP 版本
     updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
 
+    // 配置Stash单节点测速地址
+    updateProxyOption(config, "name", /学术\|/, "benchmark-url", "http://121.251.251.207");
+    updateProxyOption(config, "name", /学术\|/, "benchmark-timeout", "5");
+    updateProxyOption(config, "name", /回家\|/, "benchmark-url", "http://192.168.67.180:5244");
+    updateProxyOption(config, "name", /回家\|/, "benchmark-timeout", "5");
+
+    // 禁止与或非操作
+    delRules(config,/AND\,/)
+    delRules(config,/OR\,/)
+    delRules(config,/NOT\,/)
+
     // // 使用aes128SS
-    // updateProxyOption(config, "name", /自建L/, "port", 11369)
+    // updateProxyOption(config, "name", /自建L/, "port", 8936)
     // updateProxyOption(config, "name", /自建L/, "cipher", "aes-128-gcm")
     // // 删除2022-blake3-aes-128-gcm节点
     // removeProxiesByProperty(config, "cipher", "2022-blake3-aes-128-gcm");
@@ -44,21 +55,21 @@ function main(config, profileName) {
     //     ["🛬 西北欧落地", "🇪🇺 西北欧节点", "🗼 西北欧自建落地"],
     //     ["🛬 英国落地", "🇬🇧 英国节点", "💂 英国自建落地"]
     // ]);
-    updateDialerProxyGroup(config, [
-        ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🦁 新加坡自建落地"],
-        ["🛬 美国落地", "🇺🇲 美国节点", "💵 美国自建落地"],
-        ["🛬 日本落地", "🇯🇵 日本节点", "🎎 日本自建落地"],
-        ["🛬 香港落地", "🇭🇰 香港节点", "🌷 香港自建落地"],
-        ["🛬 湾湾落地", "🌷 香港自建落地", "🍍 湾湾自建落地"],
-        ["🛬 西北欧落地", "🦁 新加坡自建落地", "🗼 西北欧自建落地"],
-        ["🛬 英国落地", "🌷 香港自建落地", "💂 英国自建落地"]
-    ]);
-    removeGroupsByRegex(config, /任选前置/);
-    removeProxiesByRegex(config, /任选前置/);
-    removeGroupsByRegex(config, /任选落地/);
-    removeProxiesByRegex(config, /任选落地/);
-    updateGroupOption(config, "type", ["load-balance"], "strategy", "round-robin");
-
+    // updateDialerProxyGroup(config, [
+    //     ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🦁 新加坡自建落地"],
+    //     ["🛬 美国落地", "🇺🇲 美国节点", "💵 美国自建落地"],
+    //     ["🛬 日本落地", "🇯🇵 日本节点", "🎎 日本自建落地"],
+    //     ["🛬 香港落地", "🇭🇰 香港节点", "🌷 香港自建落地"],
+    //     ["🛬 湾湾落地", "🌷 香港自建落地", "🍍 湾湾自建落地"],
+    //     ["🛬 西北欧落地", "🦁 新加坡自建落地", "🗼 西北欧自建落地"],
+    //     ["🛬 英国落地", "🌷 香港自建落地", "💂 英国自建落地"]
+    // ]);
+    // removeGroupsByRegex(config, /任选前置/);
+    // removeProxiesByRegex(config, /任选前置/);
+    // removeGroupsByRegex(config, /任选落地/);
+    // removeProxiesByRegex(config, /任选落地/);
+    // updateGroupOption(config, "type", ["load-balance"], "strategy", "round-robin");
+    
     // 修改节点dialer-proxy (正则匹配)
     updateProxyOption(config, "name", /JP穿透SS-/, "dialer-proxy", "🇯🇵 日本节点");
     updateProxyOption(config, "name", /HK穿透SS-/, "dialer-proxy", "🇭🇰 香港节点");
@@ -271,6 +282,22 @@ function addRules(config, newrule, position) {
         config["rules"].unshift(newrule);
     }
 }
+
+// 删除规则
+// 传入参数：config, ruleToDelete (要删除的规则，可以是字符串或正则表达式)
+function delRules(config, ruleToDelete) {
+    if (!config || !config.rules || !Array.isArray(config.rules)) {
+      return;
+    }
+    const isRegExp = ruleToDelete instanceof RegExp;
+    config.rules = config.rules.filter(rule => {
+      if (isRegExp) {
+        return !ruleToDelete.test(rule);
+      } else {
+        return rule !== ruleToDelete;
+      }
+    });
+  }
 
 // 删除指定属性节点
 // 传入参数：config, property(属性), value(值)
