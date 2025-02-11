@@ -49,9 +49,9 @@ function main(config, profileName) {
     updateProxyOption(config, "type", ["vmess", "vless", "trojan", "ss", "ssr", "tuic"], "udp-over-tcp", true);
 
     // 添加节点到正则组
-    addProxiesToRegexGroup(config, /回家专用延迟优先/, "DIRECT");
-    addProxiesToRegexGroup(config, /CQGAS/, "DIRECT");
-    addProxiesToRegexGroup(config, /流媒体手选/, "DIRECT");
+    // addProxiesToRegexGroup(config, /回家专用延迟优先/, "DIRECT");
+    // addProxiesToRegexGroup(config, /CQGAS/, "DIRECT");
+    // addProxiesToRegexGroup(config, /流媒体手选/, "DIRECT");
 
     // 添加新节点
     const DIRECTv4Pre = { "name": "DIRECT-V4PRE", "type": "direct", "udp": true, "ip-version": "ipv4-prefer" };
@@ -60,10 +60,10 @@ function main(config, profileName) {
     // 添加规则
     // addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
 
-    removeGroupsByRegex(config,/回家/);
-    removeGroupsByRegex(config,/学术/);
-    removeProxiesByRegex(config,/回家/);
-    removeProxiesByRegex(config,/校园/);
+    // removeGroupsByRegex(config,/回家/);
+    // removeGroupsByRegex(config,/学术/);
+    // removeProxiesByRegex(config,/回家/);
+    // removeProxiesByRegex(config,/校园/);
 
     // 分组排序
     sortRulesWithinGroups(config)
