@@ -64,7 +64,6 @@ function main(config, profileName) {
     removeGroupsByRegex(config,/学术/);
     removeProxiesByRegex(config,/回家/);
     removeProxiesByRegex(config,/校园/);
-    removeGroupsByRegex(config,/谷歌FCM/);
 
     // 分组排序
     sortRulesWithinGroups(config)
