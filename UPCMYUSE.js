@@ -17,7 +17,7 @@ function main(config, profileName) {
     // ], true);
 
     // 修改落地节点 IP 版本
-    updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
+    // updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
 
     // 关闭自建落地TCP快速打开
     updateProxyOption(config, "name", /自建L/, "tfo", false);
@@ -37,8 +37,8 @@ function main(config, profileName) {
         ["🛬 美国落地", "🇺🇲 美国节点", "💵 美国自建落地"],
         ["🛬 日本落地", "🇯🇵 日本节点", "🎎 日本自建落地"],
         ["🛬 香港落地", "🇭🇰 香港节点", "🌷 香港自建落地"],
-        ["🛬 湾湾落地", "🌷 香港自建落地", "🍍 湾湾自建落地"],
-        ["🛬 西北欧落地", "🦁 新加坡自建落地", "🗼 西北欧自建落地"],
+        ["🛬 湾湾落地", "🐉 湾湾节点", "🍍 湾湾自建落地"],
+        ["🛬 西北欧落地", "🇪🇺 西北欧节点", "🗼 西北欧自建落地"],
         ["🛬 英国落地", "🦁 新加坡自建落地", "💂 英国自建落地"]
     ]);
     removeGroupsByRegex(config, /任选前置/);
@@ -70,6 +70,8 @@ function main(config, profileName) {
     addProxyAndGroup(config, DIRECTv4Pre, "before", "DIRECT");
 
     // 添加规则
+    addRules(config,"DOMAIN-SUFFIX,webvpn.upc.edu.cn,🚄 本地直连", "unshift")
+    addRules(config,"DOMAIN-SUFFIX,sslvpn.upc.edu.cn,🚄 本地直连", "unshift")
     // addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
 
     // 分组排序
