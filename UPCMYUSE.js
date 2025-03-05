@@ -4,7 +4,6 @@ function main(config, profileName) {
     updateDNS(config, [
         ["proxy-server-nameserver", "121.251.251.251"],
         ["default-nameserver", "121.251.251.251"],
-        ["direct-nameserver", "121.251.251.251"],
         ["nameserver", "121.251.251.251"]
     ]);
 
@@ -12,11 +11,21 @@ function main(config, profileName) {
     // updateDNS(config, [
     //     ["proxy-server-nameserver", "system"],
     //     ["default-nameserver", "system"],
-    //     ["direct-nameserver", "system"],
     //     ["nameserver", "system"]
     // ], true);
 
-    // 修改落地节点 IP 版本
+    // 添加DH-DNS上海
+    updateDNS(config, [
+        ["proxy-server-nameserver", "https://dh-dns.global-idt.net/dns-query#DIRECT&h3=true&skip-cert-verify=true"],
+        ["fallback", "https://dh-dns.global-idt.net/dns-query#DIRECT&h3=true&skip-cert-verify=true"]
+    ]);
+    // 添加DH-DNS北京
+    updateDNS(config, [
+        ["proxy-server-nameserver", "https://north.dh-global-team.net:438/dns-query#DIRECT&h3=true&skip-cert-verify=true"],
+        ["fallback", "https://north.dh-global-team.net:438/dns-query#DIRECT&h3=true&skip-cert-verify=true"]
+    ]);
+    
+   // 修改落地节点 IP 版本
     // updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
 
     // 关闭自建落地TCP快速打开
