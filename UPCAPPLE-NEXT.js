@@ -1,17 +1,50 @@
 function main(config, profileName) {
 
+    // 添加UPCDNS
     updateDNS(config, [
         ["proxy-server-nameserver", "121.251.251.251"],
         ["default-nameserver", "121.251.251.251"],
-        ["direct-nameserver", "121.251.251.251"],
         ["nameserver", "121.251.251.251"]
     ]);
 
+    // 移除system规则
+    updateDNS(config, [
+        ["proxy-server-nameserver", "system"],
+        ["default-nameserver", "system"],
+        ["nameserver", "system"]
+    ], true);
+
+    // 添加DH-DNS上海
+    updateDNS(config, [
+        ["proxy-server-nameserver", "https://dh-dns.global-idt.net/dns-query#RULES&h3=true&skip-cert-verify=true"],
+        ["fallback", "https://dh-dns.global-idt.net/dns-query#RULES&h3=true&skip-cert-verify=true"]
+    ]);
+    // 添加DH-DNS北京
+    updateDNS(config, [
+        ["proxy-server-nameserver", "https://north.dh-global-team.net:438/dns-query#RULES&h3=true&skip-cert-verify=true"],
+        ["fallback", "https://north.dh-global-team.net:438/dns-query#RULES&h3=true&skip-cert-verify=true"]
+    ]);
+
+    //移除nameserver-policy
+    modifyConfigByPath(config, 'dns', null, null, 'nameserver-policy', null)
+    removeNullValues(config)
+
     // 修改落地节点 IP 版本
-    updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
+    // updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
+
+    // 配置Stash单节点测速地址
+    updateProxyOption(config, "name", /学术\|/, "benchmark-url", "http://121.251.251.207");
+    updateProxyOption(config, "name", /学术\|/, "benchmark-timeout", "5");
+    updateProxyOption(config, "name", /回家\|/, "benchmark-url", "http://192.168.67.180:5244");
+    updateProxyOption(config, "name", /回家\|/, "benchmark-timeout", "5");
+
+    // 禁止与或非操作
+    delRules(config,/AND\,/)
+    delRules(config,/OR\,/)
+    delRules(config,/NOT\,/)
 
     // // 使用aes128SS
-    // updateProxyOption(config, "name", /自建L/, "port", 11369)
+    // updateProxyOption(config, "name", /自建L/, "port", 8936)
     // updateProxyOption(config, "name", /自建L/, "cipher", "aes-128-gcm")
     // // 删除2022-blake3-aes-128-gcm节点
     // removeProxiesByProperty(config, "cipher", "2022-blake3-aes-128-gcm");
@@ -26,22 +59,24 @@ function main(config, profileName) {
     //     ["🛬 日本落地", "🇯🇵 日本节点", "🎎 日本自建落地"],
     //     ["🛬 香港落地", "🇭🇰 香港节点", "🌷 香港自建落地"],
     //     ["🛬 湾湾落地", "🐉 湾湾节点", "🍍 湾湾自建落地"],
-    //     ["🛬 西北欧落地", "🇪🇺 西北欧节点", "🗼 西北欧自建落地"]
+    //     ["🛬 西北欧落地", "🇪🇺 西北欧节点", "🗼 西北欧自建落地"],
+    //     ["🛬 英国落地", "🇬🇧 英国节点", "💂 英国自建落地"]
     // ]);
-    updateDialerProxyGroup(config, [
-        ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🦁 新加坡自建落地"],
-        ["🛬 美国落地", "🇺🇲 美国节点", "💵 美国自建落地"],
-        ["🛬 日本落地", "🇯🇵 日本节点", "🎎 日本自建落地"],
-        ["🛬 香港落地", "🇭🇰 香港节点", "🌷 香港自建落地"],
-        ["🛬 湾湾落地", "🌷 香港自建落地", "🍍 湾湾自建落地"],
-        ["🛬 西北欧落地", "🦁 新加坡自建落地", "🗼 西北欧自建落地"]
-    ]);
-    removeGroupsByRegex(config, /任选前置/);
-    removeProxiesByRegex(config, /任选前置/);
-    removeGroupsByRegex(config, /任选落地/);
-    removeProxiesByRegex(config, /任选落地/);
-    updateGroupOption(config, "type", ["load-balance"], "strategy", "round-robin");
-
+    // updateDialerProxyGroup(config, [
+    //     ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🦁 新加坡自建落地"],
+    //     ["🛬 美国落地", "🇺🇲 美国节点", "💵 美国自建落地"],
+    //     ["🛬 日本落地", "🇯🇵 日本节点", "🎎 日本自建落地"],
+    //     ["🛬 香港落地", "🇭🇰 香港节点", "🌷 香港自建落地"],
+    //     ["🛬 湾湾落地", "🌷 香港自建落地", "🍍 湾湾自建落地"],
+    //     ["🛬 西北欧落地", "🇪🇺 西北欧节点", "🗼 西北欧自建落地"],
+    //     ["🛬 英国落地", "🗼 西北欧自建落地", "💂 英国自建落地"]
+    // ]);
+    // removeGroupsByRegex(config, /任选前置/);
+    // removeProxiesByRegex(config, /任选前置/);
+    // removeGroupsByRegex(config, /任选落地/);
+    // removeProxiesByRegex(config, /任选落地/);
+    // updateGroupOption(config, "type", ["load-balance"], "strategy", "round-robin");
+    
     // 修改节点dialer-proxy (正则匹配)
     updateProxyOption(config, "name", /JP穿透SS-/, "dialer-proxy", "🇯🇵 日本节点");
     updateProxyOption(config, "name", /HK穿透SS-/, "dialer-proxy", "🇭🇰 香港节点");
@@ -66,7 +101,10 @@ function main(config, profileName) {
     addProxyAndGroup(config, DIRECTv4Pre, "before", "DIRECT");
 
     // 添加规则
-    // addRules(config, "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,youtube)),REJECT", "unshift");
+    addRules(config,"DOMAIN-SUFFIX,ai-assistant.upc.edu.cn,📚 学术直连", "unshift")
+    addRules(config,"DOMAIN-SUFFIX,webvpn.upc.edu.cn,🚄 本地直连", "unshift")
+    addRules(config,"DOMAIN-SUFFIX,sslvpn.upc.edu.cn,🚄 本地直连", "unshift")
+    addRules(config,"DOMAIN-SUFFIX,www.upc.edu.cn,🚄 本地直连", "unshift")
 
     // 删除vless节点
     removeProxiesByProperty(config, "type", "vless");
@@ -107,29 +145,36 @@ function updateDNS(config, dnsMappings, del = false) {
 // 修改节点组内节点dialer-proxy代理并将relay节点组替换为新的节点组
 // 传入参数：config, groupMappings([groupName, dialerProxyName, targetGroupName])
 // 例如原逻辑为：自建落地（groupName）节点组为：自建节点1、自建节点2，relay节点组（targetGroupName）为：前置节点（dialerProxyName）、自建落地，通过脚本可以将自建节点1、自建节点2添加前置节点作为dialer-proxy代理，并修改relay节点组为select且只保留自建落地节点组
+// 若groupName中为空或DIRECT，那么则targetGroupName添加dialerProxyName并设置为select
 function updateDialerProxyGroup(config, groupMappings) {
     groupMappings.forEach(([groupName, dialerProxyName, targetGroupName]) => {
         const group = config["proxy-groups"].find(group => group.name === groupName);
-        if (group) {
+        const targetGroupIndex = config["proxy-groups"].findIndex(group => group.name === targetGroupName);
+        if (targetGroupIndex === -1) {
+            return;
+        }
+        // 检查 group.proxies 是否为空或仅包含 "DIRECT"
+        const hasOnlyDirect = group.proxies.length === 0 || group.proxies.every(proxyName => proxyName === "DIRECT");
+        if (hasOnlyDirect) {
+            config["proxy-groups"][targetGroupIndex] = {
+                name: targetGroupName,
+                type: "select",
+                proxies: [dialerProxyName],
+            };
+        } else {
             group.proxies.forEach(proxyName => {
                 if (proxyName !== "DIRECT") {
-                    const proxy = (config.proxies || []).find(p => p.name === proxyName);
+                    const proxy = config.proxies.find(p => p.name === proxyName);
                     if (proxy) {
                         proxy["dialer-proxy"] = dialerProxyName;
                     }
                 }
             });
-
-            if (group.proxies.length > 0) {
-                const targetGroupIndex = config["proxy-groups"].findIndex(group => group.name === targetGroupName);
-                if (targetGroupIndex !== -1) {
-                    config["proxy-groups"][targetGroupIndex] = {
-                        name: targetGroupName,
-                        type: "select",
-                        proxies: [groupName],
-                    };
-                }
-            }
+            config["proxy-groups"][targetGroupIndex] = {
+                name: targetGroupName,
+                type: "select",
+                proxies: [groupName],
+            };
         }
     });
 }
@@ -254,6 +299,22 @@ function addRules(config, newrule, position) {
         config["rules"].unshift(newrule);
     }
 }
+
+// 删除规则
+// 传入参数：config, ruleToDelete (要删除的规则，可以是字符串或正则表达式)
+function delRules(config, ruleToDelete) {
+    if (!config || !config.rules || !Array.isArray(config.rules)) {
+      return;
+    }
+    const isRegExp = ruleToDelete instanceof RegExp;
+    config.rules = config.rules.filter(rule => {
+      if (isRegExp) {
+        return !ruleToDelete.test(rule);
+      } else {
+        return rule !== ruleToDelete;
+      }
+    });
+  }
 
 // 删除指定属性节点
 // 传入参数：config, property(属性), value(值)
@@ -581,4 +642,15 @@ function modifyConfigByPath(config, path, searchKey, searchValue, modifyKey, mod
     }
 
     return config;
+}
+
+// 移除所有为Null的对象
+function removeNullValues(config) {
+    for (const key in config) {
+        if (config[key] === null) {
+            delete config[key];
+        } else if (typeof config[key] === 'object') {
+            removeNullValues(config[key]);
+        }
+    }
 }
