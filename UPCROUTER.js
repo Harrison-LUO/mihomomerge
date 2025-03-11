@@ -14,16 +14,16 @@ function main(config, profileName) {
         ["nameserver", "system"]
     ], true);
 
-    // 添加DH-DNS上海
-    updateDNS(config, [
-        ["proxy-server-nameserver", "https://dh-dns.global-idt.net/dns-query#RULES&h3=true&skip-cert-verify=true"],
-        ["fallback", "https://dh-dns.global-idt.net/dns-query#RULES&h3=true&skip-cert-verify=true"]
-    ]);
-    // 添加DH-DNS北京
-    updateDNS(config, [
-        ["proxy-server-nameserver", "https://north.dh-global-team.net:438/dns-query#RULES&h3=true&skip-cert-verify=true"],
-        ["fallback", "https://north.dh-global-team.net:438/dns-query#RULES&h3=true&skip-cert-verify=true"]
-    ]);
+    // // 添加DH-DNS上海
+    // updateDNS(config, [
+    //     ["proxy-server-nameserver", "https://dh-dns.global-idt.net/dns-query#RULES&h3=true&skip-cert-verify=true"],
+    //     ["fallback", "https://dh-dns.global-idt.net/dns-query#RULES&h3=true&skip-cert-verify=true"]
+    // ]);
+    // // 添加DH-DNS北京
+    // updateDNS(config, [
+    //     ["proxy-server-nameserver", "https://north.dh-global-team.net:438/dns-query#RULES&h3=true&skip-cert-verify=true"],
+    //     ["fallback", "https://north.dh-global-team.net:438/dns-query#RULES&h3=true&skip-cert-verify=true"]
+    // ]);
     
    // 修改落地节点 IP 版本
     // updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
@@ -46,9 +46,9 @@ function main(config, profileName) {
         ["🛬 美国落地", "🇺🇲 美国节点", "💵 美国自建落地"],
         ["🛬 日本落地", "🇯🇵 日本节点", "🎎 日本自建落地"],
         ["🛬 香港落地", "🇭🇰 香港节点", "🌷 香港自建落地"],
-        ["🛬 湾湾落地", "🐉 湾湾节点", "🍍 湾湾自建落地"],
+        ["🛬 湾湾落地", "🌷 香港自建落地", "🍍 湾湾自建落地"],
         ["🛬 西北欧落地", "🇪🇺 西北欧节点", "🗼 西北欧自建落地"],
-        ["🛬 英国落地", "🦁 新加坡自建落地", "💂 英国自建落地"]
+        ["🛬 英国落地", "🗼 西北欧自建落地", "💂 英国自建落地"]
     ]);
     removeGroupsByRegex(config, /任选前置/);
     removeProxiesByRegex(config, /任选前置/);
@@ -66,8 +66,11 @@ function main(config, profileName) {
     // 修改订阅组选项
     updateGroupOption(config, "type", ["load-balance", "fallback", "url-test"], "lazy", false);
 
-    // 修改节点 UDP over TCP 选项
-    updateProxyOption(config, "type", ["vmess", "vless", "trojan", "ss", "ssr", "tuic"], "udp-over-tcp", true);
+    // 修改节点skip-cert-verify选项
+    updateProxyOption(config, "type", ["vmess", "vless", "trojan", "ss", "hysteria2", "tuic"], "skip-cert-verify", true);
+
+    // // 修改节点 UDP over TCP 选项
+    // updateProxyOption(config, "type", ["vmess", "vless", "trojan", "ss", "ssr", "tuic"], "udp-over-tcp", true);
 
     // 添加节点到正则组
     addProxiesToRegexGroup(config, /回家专用延迟优先/, "DIRECT");
@@ -76,7 +79,7 @@ function main(config, profileName) {
 
     // 添加新节点
     const DIRECTv4Pre = { "name": "DIRECT-V4PRE", "type": "direct", "udp": true, "ip-version": "ipv4-prefer" };
-    addProxyAndGroup(config, DIRECTv4Pre, "before", "DIRECT");
+    addProxyAndGroup(config, DIRECTv4Pre, "after", "DIRECT");
 
     // 添加规则
     addRules(config,"DOMAIN-SUFFIX,ai-assistant.upc.edu.cn,📚 学术直连", "unshift")
