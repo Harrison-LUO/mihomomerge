@@ -30,8 +30,6 @@ function main(config, profileName) {
 
     // 关闭自建落地TCP快速打开
     updateProxyOption(config, "name", /自建L/, "tfo", false);
-    // 删除IEPL
-    removeProxiesByRegex(config, "自转发");
 
     // 设置dialer-proxy
     // updateDialerProxyGroup(config, [
