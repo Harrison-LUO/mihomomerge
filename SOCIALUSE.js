@@ -12,6 +12,9 @@ function main(config, profileName) {
     // 关闭自建落地TCP快速打开
     updateProxyOption(config, "name", /自建L/, "tfo", false);
 
+    // 删除IEPL
+    removeProxiesByRegex(config, "自转发");
+
     // 设置dialer-proxy
     // updateDialerProxyGroup(config, [
     //     ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🦁 新加坡自建落地"],
