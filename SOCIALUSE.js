@@ -13,7 +13,7 @@ function main(config, profileName) {
     updateProxyOption(config, "name", /自建L/, "tfo", false);
 
     // 删除IEPL
-    removeProxiesByRegex(config, "自转发");
+    removeProxiesByRegex(config, /自转发/);
 
     // 设置dialer-proxy
     // updateDialerProxyGroup(config, [
