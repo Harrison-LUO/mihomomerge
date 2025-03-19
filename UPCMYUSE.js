@@ -1,5 +1,12 @@
 function main(config, profileName) {
 
+    // 添加DCHP direct-nameserver
+    updateDNS(config, [
+        ["direct-nameserver", "dhcp://eth0"],
+        ["direct-nameserver", "dhcp://en0"],
+        ["direct-nameserver", "dhcp://system"]
+    ], false, true);
+
     // 添加UPCDNS
     updateDNS(config, [
         ["proxy-server-nameserver", "121.251.251.251"],
@@ -97,8 +104,8 @@ function main(config, profileName) {
 }
 
 // 增加/删除 DNS
-// 传入参数：config, dnsMappings("["proxy-server-nameserver", "121.251.251.251"]"), del(boolean, 是否删除)
-function updateDNS(config, dnsMappings, del = false) {
+// 传入参数：config, dnsMappings("["proxy-server-nameserver", "1.1.1.1"]"), del(boolean, 是否删除), createKey(boolean, 是否自动创建 dnsKey)
+function updateDNS(config, dnsMappings, del = false, createKey = false) {
     if (config.dns) {
         dnsMappings.forEach(([dnsKey, dnsValue]) => {
             if (config.dns[dnsKey]) {
@@ -114,6 +121,8 @@ function updateDNS(config, dnsMappings, del = false) {
                         config.dns[dnsKey].unshift(dnsValue);
                     }
                 }
+            } else if (createKey && !del) {
+                config.dns[dnsKey] = [dnsValue];
             }
         });
     }
