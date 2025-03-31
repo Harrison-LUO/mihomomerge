@@ -24,8 +24,11 @@ function main(config, profileName) {
     //     ["proxy-server-nameserver", "https://north.dh-global-team.net:438/dns-query#RULES&h3=true&skip-cert-verify=true"],
     //     ["fallback", "https://north.dh-global-team.net:438/dns-query#RULES&h3=true&skip-cert-verify=true"]
     // ]);
+
+    // 移除自转发
+    removeProxiesByRegex(config, /自转发/);
     
-   // 修改落地节点 IP 版本
+    // 修改落地节点 IP 版本
     // updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
 
     // 关闭自建落地TCP快速打开
@@ -478,6 +481,7 @@ function removeGroupsByRegex(config, regex) {
 // 传入参数：config, regex
 function removeProxiesByRegex(config, regex) {
     const removedProxyNames = [];
+
     config.proxies = config.proxies.filter(proxy => {
         if (regex.test(proxy.name)) {
             removedProxyNames.push(proxy.name);
@@ -485,8 +489,12 @@ function removeProxiesByRegex(config, regex) {
         }
         return true;
     });
+
     config["proxy-groups"].forEach(group => {
         group.proxies = group.proxies.filter(proxyName => !removedProxyNames.includes(proxyName));
+        if (group.proxies.length === 0) {
+            group.proxies.push("DIRECT");
+        }
     });
 }
 

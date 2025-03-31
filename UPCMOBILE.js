@@ -1,25 +1,18 @@
 function main(config, profileName) {
 
-    // 添加DCHP direct-nameserver
-    updateDNS(config, [
-        ["direct-nameserver", "dhcp://eth0"],
-        ["direct-nameserver", "dhcp://en0"],
-        ["direct-nameserver", "dhcp://system"]
-    ], false, true);
-
     // 添加UPCDNS
     updateDNS(config, [
         ["proxy-server-nameserver", "121.251.251.251"],
         ["default-nameserver", "121.251.251.251"],
         ["nameserver", "121.251.251.251"]
     ]);
-   
-    // 移除system规则
-    updateDNS(config, [
-        ["proxy-server-nameserver", "system"],
-        ["default-nameserver", "system"],
-        ["nameserver", "system"]
-    ], true);
+
+    // // 移除system规则
+    // updateDNS(config, [
+    //     ["proxy-server-nameserver", "system"],
+    //     ["default-nameserver", "system"],
+    //     ["nameserver", "system"]
+    // ], true);
 
     // // 添加DH-DNS上海
     // updateDNS(config, [
@@ -32,31 +25,8 @@ function main(config, profileName) {
     //     ["fallback", "https://north.dh-global-team.net:438/dns-query#RULES&h3=true&skip-cert-verify=true"]
     // ]);
     
-   //移除nameserver-policy
-    modifyConfigByPath(config, 'dns', null, null, 'nameserver-policy', null)
-    removeNullValues(config)
-
-    // 修改落地节点 IP 版本
+   // 修改落地节点 IP 版本
     // updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
-
-    // 配置Stash单节点测速地址
-    updateProxyOption(config, "name", /学术\|/, "benchmark-url", "http://121.251.251.207");
-    updateProxyOption(config, "name", /学术\|/, "benchmark-timeout", "5");
-    updateProxyOption(config, "name", /回家\|/, "benchmark-url", "http://192.168.67.180:5244");
-    updateProxyOption(config, "name", /回家\|/, "benchmark-timeout", "5");
-
-    // 禁止与或非操作
-    delRules(config,/AND\,/)
-    delRules(config,/OR\,/)
-    delRules(config,/NOT\,/)
-
-    // 使用aes128SS
-    updateProxyOption(config, "name", /自建L/, "port", 8936)
-    updateProxyOption(config, "name", /自建L/, "cipher", "aes-128-gcm")
-    // 删除2022-blake3-aes-128-gcm节点
-    removeProxiesByProperty(config, "cipher", "2022-blake3-aes-128-gcm");
-    // 删除vless节点
-    removeProxiesByProperty(config, "type", "vless");
 
     // 关闭自建落地TCP快速打开
     updateProxyOption(config, "name", /自建L/, "tfo", false);
@@ -71,21 +41,21 @@ function main(config, profileName) {
     //     ["🛬 西北欧落地", "🇪🇺 西北欧节点", "🗼 西北欧自建落地"],
     //     ["🛬 英国落地", "🇬🇧 英国节点", "💂 英国自建落地"]
     // ]);
-    // updateDialerProxyGroup(config, [
-    //     ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🦁 新加坡自建落地"],
-    //     ["🛬 美国落地", "🇺🇲 美国节点", "💵 美国自建落地"],
-    //     ["🛬 日本落地", "🇯🇵 日本节点", "🎎 日本自建落地"],
-    //     ["🛬 香港落地", "🇭🇰 香港节点", "🌷 香港自建落地"],
-    //     ["🛬 湾湾落地", "🌷 香港自建落地", "🍍 湾湾自建落地"],
-    //     ["🛬 西北欧落地", "🇪🇺 西北欧节点", "🗼 西北欧自建落地"],
-    //     ["🛬 英国落地", "🗼 西北欧自建落地", "💂 英国自建落地"]
-    // ]);
-    // removeGroupsByRegex(config, /任选前置/);
-    // removeProxiesByRegex(config, /任选前置/);
-    // removeGroupsByRegex(config, /任选落地/);
-    // removeProxiesByRegex(config, /任选落地/);
-    // updateGroupOption(config, "type", ["load-balance"], "strategy", "round-robin");
-    
+    updateDialerProxyGroup(config, [
+        ["🛬 新加坡落地", "🇸🇬 新加坡节点", "🦁 新加坡自建落地"],
+        ["🛬 美国落地", "🇺🇲 美国节点", "💵 美国自建落地"],
+        ["🛬 日本落地", "🇯🇵 日本节点", "🎎 日本自建落地"],
+        ["🛬 香港落地", "🇭🇰 香港节点", "🌷 香港自建落地"],
+        ["🛬 湾湾落地", "🌷 香港自建落地", "🍍 湾湾自建落地"],
+        ["🛬 西北欧落地", "🇪🇺 西北欧节点", "🗼 西北欧自建落地"],
+        ["🛬 英国落地", "🗼 西北欧自建落地", "💂 英国自建落地"]
+    ]);
+    removeGroupsByRegex(config, /任选前置/);
+    removeProxiesByRegex(config, /任选前置/);
+    removeGroupsByRegex(config, /任选落地/);
+    removeProxiesByRegex(config, /任选落地/);
+    updateGroupOption(config, "type", ["load-balance"], "strategy", "round-robin");
+
     // 修改节点dialer-proxy (正则匹配)
     updateProxyOption(config, "name", /JP穿透SS-/, "dialer-proxy", "🇯🇵 日本节点");
     updateProxyOption(config, "name", /HK穿透SS-/, "dialer-proxy", "🇭🇰 香港节点");
@@ -106,7 +76,6 @@ function main(config, profileName) {
     addProxiesToRegexGroup(config, /回家专用延迟优先/, "DIRECT");
     addProxiesToRegexGroup(config, /CQGAS/, "DIRECT");
     addProxiesToRegexGroup(config, /流媒体手选/, "DIRECT");
-    addProxiesToRegexGroup(config, /强制禁止/, "PASS", true);
 
     // 添加新节点
     const DIRECTv4Pre = { "name": "DIRECT-V4PRE", "type": "direct", "udp": true, "ip-version": "ipv4-prefer" };
@@ -117,10 +86,6 @@ function main(config, profileName) {
     addRules(config,"DOMAIN-SUFFIX,webvpn.upc.edu.cn,🚄 本地直连", "unshift")
     addRules(config,"DOMAIN-SUFFIX,sslvpn.upc.edu.cn,🚄 本地直连", "unshift")
     addRules(config,"DOMAIN-SUFFIX,www.upc.edu.cn,🚄 本地直连", "unshift")
-
-    // 删除vless节点
-    removeProxiesByProperty(config, "type", "vless");
-
 
     // 分组排序
     // sortRulesWithinGroups(config)
@@ -410,6 +375,7 @@ function sortRulesWithinGroups(config) {
     config.rules = sortedRules;
     return config;
 }
+
 
 // 向 proxies 添加节点并配置属性，然后添加到指定的节点组
 // 传入参数：config, newProxy, insertMode(before插入特定节点之前/after插入特定节点之后/regex插入正则组), reference
