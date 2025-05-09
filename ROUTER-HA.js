@@ -1,16 +1,16 @@
 function main(config, profileName) {
 
     // 添加UPC认证DNS
-    modifyConfigByPath(config, "dns.nameserver-policy", null, null, 'wlan.upc.edu.cn', ['121.251.251.251#DIRECT', '121.251.251.250#DIRECT']);
-    modifyConfigByPath(config, "dns.nameserver-policy", null, null, 'lan.upc.edu.cn', ['121.251.251.251#DIRECT', '121.251.251.250#DIRECT']);
-    modifyConfigByPath(config, "dns.nameserver-policy", null, null, 'v.upc.edu.cn', ['121.251.251.251#DIRECT', '121.251.251.250#DIRECT']);
+    modifyConfigByPath(config, "dns.nameserver-policy", null, null, 'wlan.upc.edu.cn', ['121.251.251.251', '121.251.251.250']);
+    modifyConfigByPath(config, "dns.nameserver-policy", null, null, 'lan.upc.edu.cn', ['121.251.251.251', '121.251.251.250']);
+    modifyConfigByPath(config, "dns.nameserver-policy", null, null, 'v.upc.edu.cn', ['121.251.251.251', '121.251.251.250']);
     
-    // // 添加UPCDNS
-    // updateDNS(config, [
-    //     ["proxy-server-nameserver", "121.251.251.251"],
-    //     ["default-nameserver", "121.251.251.251"],
-    //     ["nameserver", "121.251.251.251"]
-    // ]);
+    // 添加 direct-nameserver
+    updateDNS(config, [
+        ["direct-nameserver", "180.184.1.1"],
+        ["direct-nameserver", "119.29.29.29"],
+        ["direct-nameserver", "223.5.5.5"]
+    ], false, true);
 
     // 移除system规则
     updateDNS(config, [
@@ -32,6 +32,9 @@ function main(config, profileName) {
 
     // 移除自转发
     removeProxiesByRegex(config, /自转发/);
+
+    // 强制嗅探访问
+    modifyConfigByPath(config, "sniffer", null, null, "override-destination", true);
     
     // 修改落地节点 IP 版本
     // updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
@@ -99,6 +102,7 @@ function main(config, profileName) {
     addRules(config, "DOMAIN-SUFFIX,webvpn.upc.edu.cn,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN-SUFFIX,sslvpn.upc.edu.cn,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN-SUFFIX,www.upc.edu.cn,🚄 本地直连", "unshift")
+    addRules(config, "DOMAIN-SUFFIX,github.com,🗽 美国应用", "unshift")
     addRules(config, "DOMAIN-SUFFIX,githubusercontent.com,🗽 美国应用", "unshift")
     addRules(config, "DOMAIN,testingcf.jsdelivr.net,🚀 主要代理", "unshift")
     addRules(config, "DOMAIN,fastly.jsdelivr.net,🚄 本地直连", "unshift")
@@ -106,34 +110,44 @@ function main(config, profileName) {
     addRules(config, "DOMAIN,www.msftconnecttest.com,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN,dns.msftncsi.com,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN,www.msftncsi.com,🚄 本地直连", "unshift")
-    addRules(config, "DOMAIN,dns.google,🍀 香港应用", "unshift")
-    addRules(config, "IP-CIDR,8.8.8.8/32,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR,8.8.4.4/32,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR6,2001:4860:4860::8888/128,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR6,2001:4860:4860::8844/128,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "DOMAIN,dns.cloudflare.com,🍀 香港应用", "unshift")
-    addRules(config, "IP-CIDR,1.1.1.1/32,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR,1.1.1.2/32,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR,1.0.0.1/32,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR,101.101.101.101/32,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "DOMAIN,dns.opendns.com,🍀 香港应用", "unshift")
-    addRules(config, "DOMAIN,dns.umbrella.com,🍀 香港应用", "unshift")
-    addRules(config, "DOMAIN,familyshield.opendns.com,🍀 香港应用", "unshift")
-    addRules(config, "DOMAIN,sandbox.opendns.com,🍀 香港应用", "unshift")
-    addRules(config, "IP-CIDR,208.67.220.220/32,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR,208.67.222.222/32,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR,208.67.220.123/32,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR,208.67.222.123/32,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR,208.67.220.2/32,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR,208.67.222.2/32,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR6,2620:119:35::35/128,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR6,2620:119:53::53/128,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR6,2620:119:35::123/128,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR6,2620:119:53::123/128,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR6,2620:0:ccc::2/128,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "IP-CIDR6,2620:0:ccd::2/128,🍀 香港应用,no-resolve", "unshift")
-    addRules(config, "DOMAIN-SUFFIX,dns.alidns.com,🚄 本地直连", "unshift")
-    addRules(config, "DOMAIN-SUFFIX,doh.pub,🚄 本地直连", "unshift")
+
+    //添加DNS规则
+    addRules(config, "DOMAIN,dns.google,🚀 主要代理", "unshift")
+    addRules(config, "IP-CIDR,8.8.8.8/32,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,8.8.4.4/32,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2001:4860:4860::8888/128,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2001:4860:4860::8844/128,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "DOMAIN,dns.cloudflare.com,🚀 主要代理", "unshift")
+    addRules(config, "DOMAIN,cloudflare-dns.com,🚀 主要代理", "unshift")
+    addRules(config, "DOMAIN,one.one.one.one,🚀 主要代理", "unshift")
+    addRules(config, "IP-CIDR,1.1.1.1/32,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,1.1.1.2/32,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,1.0.0.1/32,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,101.101.101.101/32,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2606:4700:4700::1111/128,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2606:4700:4700::1001/128,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "DOMAIN,dns.opendns.com,🚀 主要代理", "unshift")
+    addRules(config, "DOMAIN,dns.umbrella.com,🚀 主要代理", "unshift")
+    addRules(config, "DOMAIN,familyshield.opendns.com,🚀 主要代理", "unshift")
+    addRules(config, "DOMAIN,sandbox.opendns.com,🚀 主要代理", "unshift")
+    addRules(config, "IP-CIDR,208.67.220.220/32,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,208.67.222.222/32,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,208.67.220.123/32,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,208.67.222.123/32,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,208.67.220.2/32,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,208.67.222.2/32,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2620:119:35::35/128,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2620:119:53::53/128,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2620:119:35::123/128,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2620:119:53::123/128,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2620:0:ccc::2/128,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2620:0:ccd::2/128,🚀 主要代理,no-resolve", "unshift")
+    addRules(config, "DOMAIN,dns.alidns.com,🚄 本地直连", "unshift")
+    addRules(config, "DOMAIN,doh.pub,🚄 本地直连", "unshift")
+    addRules(config, "DOMAIN,dot.pub,🚄 本地直连", "unshift")
+    addRules(config, "DOMAIN,doh-pure.onedns.net,🚄 本地直连", "unshift")
+    addRules(config, "DOMAIN,doh.360.cn,🚄 本地直连", "unshift")
+    addRules(config, "DOMAIN,dot.360.cn,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN-SUFFIX,dh-global-team.net,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN-SUFFIX,dh-dns.global-idt.net,🚄 本地直连", "unshift")
     addRules(config, "IP-CIDR,162.14.132.109/32,🚄 本地直连,no-resolve", "unshift")
@@ -142,10 +156,34 @@ function main(config, profileName) {
     addRules(config, "IP-CIDR,110.185.101.40/32,🚄 本地直连,no-resolve", "unshift")
     addRules(config, "IP-CIDR,119.29.29.29/32,🚄 本地直连,no-resolve", "unshift")
     addRules(config, "IP-CIDR,223.5.5.5/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,223.6.6.6/32,🚄 本地直连,no-resolve", "unshift")
     addRules(config, "IP-CIDR,180.76.76.76/32,🚄 本地直连,no-resolve", "unshift")
     addRules(config, "IP-CIDR,114.114.114.114/32,🚄 本地直连,no-resolve", "unshift")
-    addRules(config, "IP-CIDR6,2400:da00::6666/128,🚄 本地直连,no-resolve", "unshift")
-    addRules(config, "IP-CIDR6,240c::6666/128,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,114.114.115.115/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,114.114.114.119/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,114.114.115.119/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,114.114.114.110/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,114.114.115.110/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,1.12.12.12/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,120.53.53.53/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,117.50.10.10/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,52.80.52.52/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,1.2.4.8/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,210.2.4.8/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,101.226.4.6/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,218.30.118.6/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,123.125.81.6/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,140.207.198.6/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,180.184.1.1/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR,180.184.2.2/32,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2400:da00::6666/64,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,240c::6666/64,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2402:4e00::/64,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2402:4e00:1::/64,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2400:3200:baba::1/128,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2400:3200::1/128,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2404:c2c0:85d8:901::8/128,🚄 本地直连,no-resolve", "unshift")
+    addRules(config, "IP-CIDR6,2400:7fc0:849e:200::8/128,🚄 本地直连,no-resolve", "unshift")
 
     // 分组排序
     // sortRulesWithinGroups(config)
