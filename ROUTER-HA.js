@@ -5,13 +5,6 @@ function main(config, profileName) {
     modifyConfigByPath(config, "dns.nameserver-policy", null, null, 'lan.upc.edu.cn', ['121.251.251.251', '121.251.251.250']);
     modifyConfigByPath(config, "dns.nameserver-policy", null, null, 'v.upc.edu.cn', ['121.251.251.251', '121.251.251.250']);
     
-    // 添加 direct-nameserver
-    updateDNS(config, [
-        ["direct-nameserver", "180.184.1.1"],
-        ["direct-nameserver", "119.29.29.29"],
-        ["direct-nameserver", "223.5.5.5"]
-    ], false, true);
-
     // 移除system规则
     updateDNS(config, [
         ["proxy-server-nameserver", "system"],
@@ -95,6 +88,7 @@ function main(config, profileName) {
 
     // 添加规则
     addRules(config, "DOMAIN-SUFFIX,ai-assistant.upc.edu.cn,📚 学术直连", "unshift")
+    addRules(config, "DOMAIN-SUFFIX,xsdk.upc.edu.cn,📚 学术直连", "unshift")
     addRules(config, "DOMAIN-SUFFIX,lan.upc.edu.cn,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN-SUFFIX,wlan.upc.edu.cn,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN-SUFFIX,v.upc.edu.cn,🚄 本地直连", "unshift")

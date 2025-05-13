@@ -5,27 +5,26 @@ function main(config, profileName) {
     modifyConfigByPath(config, "dns.nameserver-policy", null, null, 'lan.upc.edu.cn', ['121.251.251.251', '121.251.251.250']);
     modifyConfigByPath(config, "dns.nameserver-policy", null, null, 'v.upc.edu.cn', ['121.251.251.251', '121.251.251.250']);
     
-    // 添加DCHP direct-nameserver
-    updateDNS(config, [
-        ["direct-nameserver", "dhcp://eth0"],
-        ["direct-nameserver", "dhcp://en0"],
-        ["direct-nameserver", "dhcp://wlan0"],
-        ["direct-nameserver", "dhcp://system"]
-    ], false, true);
-
-    // // 添加UPCDNS
+    // // 添加DCHP direct-nameserver
     // updateDNS(config, [
-    //     ["proxy-server-nameserver", "121.251.251.251"],
-    //     ["default-nameserver", "121.251.251.251"],
-    //     ["nameserver", "121.251.251.251"]
-    // ]);
-   
-    // 移除system规则
+    //     ["direct-nameserver", "dhcp://eth0"],
+    //     ["direct-nameserver", "dhcp://en0"],
+    //     ["direct-nameserver", "dhcp://wlan0"],
+    //     ["direct-nameserver", "system"]
+    // ], false, true);
+
+    // 移除通用DNS并添加DHCPDNS
     updateDNS(config, [
-        ["proxy-server-nameserver", "system"],
-        ["default-nameserver", "system"],
-        ["nameserver", "system"]
+        ["nameserver", "180.184.1.1"],
+        ["nameserver", "119.29.29.29"],
+        ["nameserver", "223.5.5.5"]
     ], true);
+    updateDNS(config, [
+        ["nameserver", "dhcp://eth0"],
+        ["nameserver", "dhcp://en0"],
+        ["nameserver", "dhcp://wlan0"],
+        ["nameserver", "system"]
+    ]);
 
     // // 添加DH-DNS上海
     // updateDNS(config, [
@@ -121,6 +120,7 @@ function main(config, profileName) {
 
     // 添加规则
     addRules(config, "DOMAIN-SUFFIX,ai-assistant.upc.edu.cn,📚 学术直连", "unshift")
+    addRules(config, "DOMAIN-SUFFIX,xsdk.upc.edu.cn,📚 学术直连", "unshift")
     addRules(config, "DOMAIN-SUFFIX,lan.upc.edu.cn,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN-SUFFIX,wlan.upc.edu.cn,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN-SUFFIX,v.upc.edu.cn,🚄 本地直连", "unshift")
