@@ -100,6 +100,7 @@ function main(config, profileName) {
     addRules(config, "DOMAIN-SUFFIX,sslvpn.upc.edu.cn,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN-SUFFIX,www.upc.edu.cn,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN,raw.githubusercontent.com,🚀 主要代理", "unshift")
+    addRules(config, "DOMAIN,gist.githubusercontent.com,🚀 主要代理", "unshift")
     addRules(config, "DOMAIN,testingcf.jsdelivr.net,🚀 主要代理", "unshift")
     addRules(config, "DOMAIN,fastly.jsdelivr.net,🚄 本地直连", "unshift")
     addRules(config, "DOMAIN,cdn.jsdmirror.com,🚄 本地直连", "unshift")
