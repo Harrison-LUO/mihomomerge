@@ -43,8 +43,9 @@ function main(config, profileName) {
     modifyConfigByPath(config, 'dns', null, null, 'nameserver-policy', null)
     removeNullValues(config)
 
-    // 修改落地节点 IP 版本
-    // updateProxyOptionByGroup(config, "name", /.*/, "ip-version", "ipv4-prefer");
+    //修改落地节点 IP 版本
+    updateProxyOptionByGroup(config, "name", /自转发/, "ip-version", "ipv6-prefer");
+    updateProxyOptionByGroup(config, "name", /自建D/, "ip-version", "ipv6-prefer");
 
     // 配置Stash单节点测速地址
     updateProxyOption(config, "name", /学术\|/, "benchmark-url", "http://121.251.251.207");
