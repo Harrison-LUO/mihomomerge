@@ -29,9 +29,9 @@ function main(config, profileName) {
     // 修改大流量负载均衡顺序美国优先
     sortProxiesInGroup(config, /大流量故障转移/, [/美国|US/i, /新加坡|SG/i]);
     
-    //修改落地节点 IP 版本
-    updateProxyOptionByGroup(config, "name", /自转发/, "ip-version", "ipv6-prefer");
-    updateProxyOptionByGroup(config, "name", /自建D/, "ip-version", "ipv6-prefer");
+    //修改节点 IP 版本
+    updateProxyOption(config, "name", /自转发/, "ip-version", "ipv6-prefer");
+    updateProxyOption(config, "name", /自建D/, "ip-version", "ipv6-prefer");
 
     // 关闭自建落地TCP快速打开
     updateProxyOption(config, "name", /自建L/, "tfo", false);

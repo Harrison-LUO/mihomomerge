@@ -46,9 +46,9 @@ function main(config, profileName) {
     //     ["fallback", "https://north.dh-global-team.net:438/dns-query#RULES&h3=true&skip-cert-verify=true"]
     // ]);
     
-   //修改落地节点 IP 版本
-    updateProxyOptionByGroup(config, "name", /自转发/, "ip-version", "ipv6-prefer");
-    updateProxyOptionByGroup(config, "name", /自建D/, "ip-version", "ipv6-prefer");
+   //修改节点 IP 版本
+    updateProxyOption(config, "name", /自转发/, "ip-version", "ipv6-prefer");
+    updateProxyOption(config, "name", /自建D/, "ip-version", "ipv6-prefer");
 
     // 关闭自建落地TCP快速打开
     updateProxyOption(config, "name", /自建L/, "tfo", false);
