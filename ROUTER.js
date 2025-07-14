@@ -30,7 +30,7 @@ function main(config, profileName) {
     sortProxiesInGroup(config, /大流量故障转移/, [/美国|US/i, /新加坡|SG/i]);
     
     //修改节点 IP 版本
-    updateProxyOption(config, "name", /自转发/, "ip-version", "ipv6-prefer");
+
     updateProxyOption(config, "name", /自建D/, "ip-version", "ipv6-prefer");
 
     // 关闭自建落地TCP快速打开

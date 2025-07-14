@@ -44,7 +44,7 @@ function main(config, profileName) {
     removeNullValues(config)
 
     //修改节点 IP 版本
-    updateProxyOption(config, "name", /自转发/, "ip-version", "ipv6-prefer");
+
     updateProxyOption(config, "name", /自建D/, "ip-version", "ipv6-prefer");
 
     // 配置Stash单节点测速地址

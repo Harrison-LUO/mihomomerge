@@ -47,7 +47,7 @@ function main(config, profileName) {
     // ]);
 
     //修改节点 IP 版本
-    updateProxyOption(config, "name", /自转发/, "ip-version", "ipv6-prefer");
+
     updateProxyOption(config, "name", /自建D/, "ip-version", "ipv6-prefer");
 
     // 关闭自建落地TCP快速打开
