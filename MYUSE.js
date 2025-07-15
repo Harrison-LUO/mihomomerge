@@ -87,6 +87,7 @@ function main(config, profileName) {
 
     // 修改订阅组选项
     updateGroupOption(config, "type", ["load-balance", "fallback", "url-test"], "lazy", false);
+    updateGroupOption(config, "type", ["load-balance", "fallback", "url-test"], "timeout", "12000");
 
     // 修改节点skip-cert-verify选项
     updateProxyOption(config, "type", ["vmess", "vless", "trojan", "ss", "hysteria2", "tuic"], "skip-cert-verify", true);
