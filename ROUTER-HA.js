@@ -72,7 +72,7 @@ function main(config, profileName) {
     updateProxyOption(config, "name", /TW穿透SS-/, "dialer-proxy", "🐉 湾湾节点");
 
     // 修改订阅组选项
-    updateGroupOption(config, "type", ["load-balance", "fallback", "url-test"], "lazy", false);
+    updateGroupOption(config, "type", ["load-balance", "fallback", "url-test"], "lazy", true);
     updateGroupOption(config, "type", ["load-balance", "fallback", "url-test"], "max-failed-times", 10);
     updateGroupOption(config, "type", ["load-balance", "fallback", "url-test"], "timeout", 15000);
 
